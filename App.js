@@ -1,21 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import Task from './components/task';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      {/* Heading */}
+      <View style={styles.taskswrapper}>
+        <Text sytle={styles.title}>Today's Task !?</Text>
+        <View style={styles.taskview}>
+          {/* App View tasks */}
+          <Task text='Task 1' />
+          <Task text='Task 2' />
+
+        </View>
+      </View>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'red',
   },
+
+  taskswrapper: {
+    // paddingTop: 60,
+    // paddingHorizontal: 20,
+    
+  }, 
+
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+
+  },
+
+  taskview:{}
 });
