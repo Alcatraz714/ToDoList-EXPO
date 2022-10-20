@@ -18,23 +18,31 @@ import { Storetask } from "./Helper";
 export default function App() {
   const [task, setTask] = useState("");
   const [taskAdd, setTaskAdd] = useState(false);
-  const [taskItems, setTaskItems] = useState([]);
+  const [taskItems, setTaskItems] = useState();
 
-  const handleAddtask = () => {
+  const handleAddtask = async () => {
     Keyboard.dismiss();
-    setTaskAdd(true);
-    Storetask(task);
+    Storetask(task)
+      .then(() => setTaskAdd(prev => !prev))
+      .catch((e) => console.log(e));
     setTask(null);
   };
 
-  useEffect(() => {
-    async function Test() {
-      await AsyncStorage.getItem("TaskArray").then((res) => {
+  async function getTaskArray() {
+    await AsyncStorage.getItem("TaskArray")
+      .then((res) => {
         setTaskItems(JSON.parse(res));
-      });
-    }
-    Test();
+      })
+      .catch((e) => console.log("error", e));
+  }
+
+  useEffect(() => {
+    getTaskArray();
   }, []);
+
+  useEffect(() => {
+    getTaskArray();
+  }, [taskAdd]);
 
   const completeTask = async (index) => {
     let itemsCopy = [...taskItems];
@@ -43,7 +51,6 @@ export default function App() {
     await AsyncStorage.setItem("TaskArray", JSON.stringify(itemsCopy)).then(
       () => setTaskAdd(false)
     );
-    // setTaskItems(itemsCopy);
   };
 
   return (
@@ -57,7 +64,7 @@ export default function App() {
       >
         <View style={styles.tasksWrapper}>
           <View style={styles.taskview}>
-            {taskItems === null || taskItems.length === 0 ? (
+            {taskItems === null || taskItems === undefined ? (
               <Text>Nothing here! Add some task from below</Text>
             ) : (
               taskItems.map((item, index) => {
@@ -125,13 +132,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     flex: 1,
-    marginHorizontal: '10%'
+    marginHorizontal: "10%",
   },
 
   input: {
     paddingVertical: 15,
     paddingHorizontal: 20,
-    width: '75%',
+    width: "75%",
     backgroundColor: "white",
     borderRadius: 10,
     borderColor: "#C0C0C0",
